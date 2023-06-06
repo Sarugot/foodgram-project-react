@@ -1,6 +1,9 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from users.models import User
+
+MINVALUE = 1
 
 
 class Tag(models.Model):
@@ -20,6 +23,7 @@ class Tag(models.Model):
     )
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -38,6 +42,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
 
@@ -73,8 +78,8 @@ class Recipe(models.Model):
         Tag,
         verbose_name='Теги'
     )
-    cooking_time = models.IntegerField(
-        validators=[MinValueValidator(1)],
+    cooking_time = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(MINVALUE)],
         verbose_name='Время приготовления'
     )
     pub_date = models.DateTimeField(
@@ -104,12 +109,13 @@ class RecipeIngredient(models.Model):
         related_name='recipeingredient_ingredients',
         verbose_name='Ингредиент'
     )
-    amount = models.IntegerField(
-        validators=[MinValueValidator(1)],
+    amount = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(MINVALUE)],
         verbose_name='Количество',
     )
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Ингредиенты в рецепте'
         verbose_name_plural = 'Ингредиенты в рецептах'
         constraints = [
@@ -138,6 +144,7 @@ class ShoppingСart(models.Model):
     )
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
         constraints = [
@@ -166,6 +173,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        ordering = ('-id',)
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         constraints = [

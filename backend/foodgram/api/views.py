@@ -1,22 +1,22 @@
 from django.db.models import Sum
-from django_filters.rest_framework import DjangoFilterBackend
 from django.http import HttpResponse
-from rest_framework import status, viewsets, filters, exceptions
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import status, viewsets, filters, exceptions
+
+from .filters import CustomFilter
+from .pagination import CustomPageNumberPagination
+from .permissions import IsAdminUserOrReadOnly, IsOwnerOrReadOnly
 from .serializers import SubscriptionsSerializer, SubscribeSerializer
 from .serializers import TagSerializer, IngredientSerializer
 from .serializers import RecipeListSerializer, RecipeCreateUpdateSerializer
 from .serializers import RecipeShortSerializer
-from .pagination import CustomPageNumberPagination
-from .permissions import IsAdminUserOrReadOnly, IsOwnerOrReadOnly
-from .filters import CustomFilter
 from recipes.models import Recipe, Tag, Ingredient, Favorite, ShoppingСart
 from recipes.models import RecipeIngredient
-
 from users.models import Subscribe, User
 
 
@@ -49,14 +49,20 @@ class SubscribeView(APIView):
     def delete(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
-        try:
-            Subscribe.objects.get(user=user, author=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Subscribe.DoesNotExist:
+        subscription = Subscribe.objects.filter(
+            user=user,
+            author=author
+        )
+        if not subscription:
             return Response(
                 'Подписки не существует',
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        subscription.delete()
+        return Response(
+            'Подписка удалена',
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -92,13 +98,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = self.request.user
         recipe = get_object_or_404(Recipe, **kwargs)
         if self.request.method == 'POST':
-            if Favorite.objects.filter(user=user, recipe=recipe).exists():
-                raise exceptions.ValidationError('Рецепт уже добавлен.')
-            Favorite.objects.create(user=user, recipe=recipe)
             serializer = RecipeShortSerializer(
                 recipe,
+                data=request.data,
                 context={'request': request}
             )
+            serializer.is_valid(raise_exception=True)
+            Favorite.objects.create(user=user, recipe=recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if self.request.method == 'DELETE':
             if not Favorite.objects.filter(user=user, recipe=recipe).exists():
@@ -112,13 +118,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = self.request.user
         recipe = get_object_or_404(Recipe, **kwargs)
         if self.request.method == 'POST':
-            if ShoppingСart.objects.filter(user=user, recipe=recipe).exists():
-                raise exceptions.ValidationError('Рецепт уже добавлен.')
-            ShoppingСart.objects.create(user=user, recipe=recipe)
             serializer = RecipeShortSerializer(
                 recipe,
+                data=request.data,
                 context={'request': request}
             )
+            serializer.is_valid(raise_exception=True)
+            ShoppingСart.objects.create(user=user, recipe=recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if self.request.method == 'DELETE':
             if not ShoppingСart.objects.filter(

@@ -10,12 +10,18 @@ class IngredientAdmin(admin.ModelAdmin):
     search_fields = ('name', )
 
 
+class RecipeIngredientInline(admin.StackedInline):
+    model = models.RecipeIngredient
+    min_num = 1
+
+
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'author', 'in_favorites')
     readonly_fields = ('in_favorites',)
     list_filter = ('name', 'author', 'tags')
     empty_value_display = '-пусто-'
+    inlines = (RecipeIngredientInline, )
 
     @admin.display(description='Добавлен в избранное')
     def in_favorites(self, obj):
