@@ -37,7 +37,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker compose pull sarugot/foodgram-backend:latest
+            sudo docker pull sarugot/foodgram-backend:latest
             sudo docker compose stop
             sudo docker compose rm backend
             rm .env
