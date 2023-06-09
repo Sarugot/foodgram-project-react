@@ -4,7 +4,7 @@ import os
 from django.core.management.base import BaseCommand
 
 from foodgram import settings
-from models import Ingredient
+from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
