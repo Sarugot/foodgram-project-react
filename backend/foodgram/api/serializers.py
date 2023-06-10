@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_base64.fields import Base64ImageField
@@ -9,7 +9,6 @@ from users.models import Subscribe, User
 from recipes.models import Recipe, Tag, Ingredient, RecipeIngredient
 from recipes.models import ShoppingСart, Favorite
 
-MIN_VALUE = 0
 MAX_VALUE = 32000
 
 
@@ -146,7 +145,7 @@ class RecipeIngredientCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания связей между рецептом и ингридиентом."""
     id = serializers.IntegerField()
     amount = serializers.IntegerField(
-        validators=[MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)]
+        validators=[MaxValueValidator(MAX_VALUE)]
     )
 
     class Meta:
@@ -235,7 +234,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     ingredients = RecipeIngredientCreateSerializer(many=True)
     image = Base64ImageField()
     cooking_time = serializers.IntegerField(
-        validators=[MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)]
+        validators=[MaxValueValidator(MAX_VALUE)]
     )
 
     def validate(self, obj):
