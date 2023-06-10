@@ -56,26 +56,26 @@ docker-compose up -d --build
 Выполнить миграции:
 
 ```
-docker-compose exec backend python manage.py makemigrations
-docker-compose exec backend python manage.py migrate
+docker compose exec backend python manage.py makemigrations
+docker compose exec backend python manage.py migrate
 ```
 
 Создать суперпользователя:
 
 ```
-docker-compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py createsuperuser
 ```
 
 Собрать статику:
 
 ```
-docker-compose exec backend python manage.py collectstatic --no-input
+docker compose exec backend python manage.py collectstatic --no-input
 ```
 
 Загрузить базу данных ингредиентов:
 
 ```
-docker-compose exec backend python manage.py ingredients_data
+docker compose exec backend python manage.py ingredients_data
 ```
 
 
