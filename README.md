@@ -50,7 +50,7 @@ cd infra
 Запустить контейнеры:
 
 ```
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 Выполнить миграции:
