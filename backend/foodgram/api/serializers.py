@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_base64.fields import Base64ImageField
@@ -141,7 +142,9 @@ class IngredientSerializer(serializers.ModelSerializer):
 class RecipeIngredientCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для создания связей между рецептом и ингридиентом."""
     id = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -228,7 +231,9 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     ingredients = RecipeIngredientCreateSerializer(many=True)
     image = Base64ImageField()
-    cooking_time = serializers.IntegerField()
+    cooking_time = serializers.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(5)]
+    )
 
     def validate(self, obj):
         if not obj.get('tags'):

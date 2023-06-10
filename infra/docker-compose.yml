@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:13.0-alpine
     volumes:
-      - /var/lib/postgresql/data/
+      - data_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
 
@@ -20,7 +20,7 @@ services:
   frontend:
     image: sarugot/foodgram-frontend:latest
     volumes:
-      - ../frontend/:/app/result_build/
+      - frontend_value:../frontend/:/app/result_build/
     depends_on:
       - backend
 
@@ -42,3 +42,4 @@ volumes:
   static_value:
   media_value:
   data_value:
+  frontend_value:
