@@ -1,10 +1,3 @@
-# praktikum_new_diplom
-
-login = admin@mail.ru
-password = admin
-host = http://84.201.165.255/
-
-
 # Проект Foodgram
 ## Автор:
 
